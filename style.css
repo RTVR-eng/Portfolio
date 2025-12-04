@@ -1,0 +1,205 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Responsive root font-size: scales with viewport width but clamped to reasonable values */
+html {
+  font-size: clamp(14px, 0.9vw + 12px, 18px);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+body{
+  background: #141414;
+  /* Prevent scrolling downwards */
+  overflow: hidden;
+  /* Fill viewport exactly */
+  height: 100vh;
+  color: #eaeaea;
+}
+canvas{
+    /* Position canvases absolutely so they cover the full document (page) and
+       pieces stack relative to document height rather than viewport height. */
+      position:absolute;
+      top:0;
+      left:0;
+}
+
+/* Tetris canvases: background and foreground */
+canvas.tetris-bg{
+  z-index: 0;
+  pointer-events: none;
+}
+
+canvas.tetris-fg{
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Centered Tetris visual box (approx size of profile image box) */
+.tetris-box{
+  position: relative;
+  width: 20rem; /* match profile max-width */
+  height: 22rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 0.375rem;
+  z-index: -1; /* behind canvases so pieces draw over it */
+  pointer-events: none;
+}
+
+/* Centered site container reduced to 80% width */
+.site{
+  width: clamp(20rem, 90%, 90rem);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.site h1 {
+  text-align: center;
+  width: 100%;
+  animation: spinSideways 3s linear infinite;
+}
+
+@keyframes spinSideways {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.site > div:not(h1) {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Container that holds the centered box and the reset button */
+.tetris-container{
+  position: relative;
+  flex: 1;
+  min-width: 18rem;
+  max-width: 20rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 0;
+}
+.tetris-reset{
+  appearance: none;
+  border: 0;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-family: sans-serif;
+  position: relative;
+  z-index: 10;
+}
+.tetris-reset:hover{ background: rgba(255,255,255,0.09); }
+
+.tetris-score{
+  position: absolute;
+  top: -3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-family: sans-serif;
+  font-size: 1rem;
+  z-index: 10;
+}
+
+#tetris-score-value{
+  font-weight: bold;
+  color: #4fef2f;
+}
+
+/* Profile block (image moved to the right with a caption) */
+.profile{
+  position: relative;
+  flex: 1;
+  min-width: 18rem;
+  max-width: 20rem;
+  text-align: center;
+  z-index: 10001;
+  background: rgba(0,0,0,0.6);
+  padding: 0.5rem; /* was 8px */
+  border-radius: 0.375rem; /* was 6px */
+}
+
+.profile h4{
+  color: #ffffff;
+  font-family: sans-serif;
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.profile img{
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0.375rem;
+}
+
+/* Left info box: fixed to viewport left side */
+.info-box{
+  position: relative;
+  flex: 1;
+  min-width: 18rem;
+  max-width: 22rem;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  z-index: 10001;
+  font-family: sans-serif;
+  text-align: left;
+}
+
+.info-box h2{
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+}
+
+.info-box p{
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+.github-portfolio-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  font-family: sans-serif;
+  font-size: 1rem;
+  border: none;
+  transition: color 0.3s ease;
+  text-align: center;
+}
+
+.github-portfolio-btn:hover {
+  color: #4fef2f;
+}

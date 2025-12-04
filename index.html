@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Portfolio</title>
+</head>
+<body>
+    <canvas></canvas>
+    <div class="site">
+    <h1>Roope Ruuskanen</h1>
+    <div style="position: relative; display: flex; gap: 5rem; justify-content: center; align-items: flex-start; width: 100%; margin-top: 7rem;">
+    <div class="info-box">
+        <h2>Tietoja</h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla aspernatur facere ipsam vero provident debitis atque modi, nam, illum reiciendis eos! Nostrum repudiandae enim optio reiciendis modi tempora voluptate quis, nobis possimus, dolorum maiores facilis rerum suscipit omnis necessitatibus tempore.</p>
+    </div>
+    <div class="tetris-container">
+        <div class="tetris-score">Score: <span id="tetris-score-value">0</span></div>
+        <div class="tetris-box"></div>
+        <button class="tetris-reset" type="button">Reset blocks</button>
+    </div>
+    <div class="profile">
+        <h4>kuva minusta</h4>
+        <img src="nanamik.jpg" alt="nanamik">
+    </div>
+    </div>
+    <a href="https://github.com/RTVR-eng" class="github-portfolio-btn">Github portfolio</a>
+    </div>
+        <!-- Tetris test block: does not remove existing content; creates a single test instance -->
+        <!-- Control widget to toggle prepopulation at runtime -->
+        <div id="tetris-control" style="position:fixed;right:0.75rem;top:0.75rem;color:#fff;z-index:9999;font-family:sans-serif;font-size:0.875rem;">
+            <a href="https://www.taitotalo.fi/?gad_source=1&gad_campaignid=16568871499&gbraid=0AAAAACj6z1-5qMy6lHa1iH8lUUeFt3NnL&gclid=Cj0KCQiA_8TJBhDNARIsAPX5qxRK--oBDly9_K-Yj0p3J-DYyaVvNf1hyGG8mnmEDIB-E91K6xmrlxQaAg_LEALw_wcB" style="color:#fff;text-decoration:none;cursor:pointer;">Taitotalo</a>
+        </div>
+        <script>
+            // Prevent the library from auto-initializing multiple instances
+            window.TETRIS_AUTO_INIT = false;
+        </script>
+        <script src="tausta.js"></script>
+        <script>
+            // Create a single Tetris instance for quick verification without removing any existing content
+            document.addEventListener('DOMContentLoaded', function () {
+                var boardDiv = 20 * Math.round(window.innerWidth / 20);
+                var bWidth = boardDiv; // single board fills the width
+                // x=0, y=0, width=bWidth
+                try {
+                    // Create score display if missing
+                    var scoreDisplay = document.querySelector('.tetris-score');
+                    if (!scoreDisplay) {
+                        scoreDisplay = document.createElement('div');
+                        scoreDisplay.className = 'tetris-score';
+                        scoreDisplay.innerHTML = 'Score: <span id="tetris-score-value">0</span>';
+                        document.body.appendChild(scoreDisplay);
+                    }
+                    window.TETRIS_SCORE = 0;
+
+                    // Create or select a centered container with the visual box and reset button
+                    var container = document.querySelector('.tetris-container');
+                    if (!container) {
+                        container = document.createElement('div');
+                        container.className = 'tetris-container';
+                        document.body.appendChild(container);
+                    }
+
+                    var box = container.querySelector('.tetris-box');
+                    if (!box) {
+                        box = document.createElement('div');
+                        box.className = 'tetris-box';
+                        container.appendChild(box);
+                    }
+
+                    // Wire reset button
+                    var resetBtn = document.querySelector('.tetris-reset');
+                    if (resetBtn) {
+                        resetBtn.addEventListener('click', function () {
+                            location.reload();
+                        });
+                    }
+
+                    
+
+                    // Allow layout to settle then compute inner rect and instantiate
+                    setTimeout(function () {
+                        var rect = box.getBoundingClientRect();
+                        var style = window.getComputedStyle(box);
+
+                        var borderLeft = parseFloat(style.borderLeftWidth) || 0;
+                        var borderRight = parseFloat(style.borderRightWidth) || 0;
+                        var borderTop = parseFloat(style.borderTopWidth) || 0;
+                        var borderBottom = parseFloat(style.borderBottomWidth) || 0;
+
+                        var paddingLeft = parseFloat(style.paddingLeft) || 0;
+                        var paddingRight = parseFloat(style.paddingRight) || 0;
+                        var paddingTop = parseFloat(style.paddingTop) || 0;
+                        var paddingBottom = parseFloat(style.paddingBottom) || 0;
+
+                        var innerLeft = Math.round(rect.left + borderLeft + paddingLeft + window.scrollX);
+                        var innerTop = Math.round(rect.top + borderTop + paddingTop + window.scrollY);
+                        var innerWidth = Math.max(32, Math.round(rect.width - (borderLeft + borderRight) - (paddingLeft + paddingRight)));
+                        var innerHeight = Math.max(32, Math.round(rect.height - (borderTop + borderBottom) - (paddingTop + paddingBottom)));
+
+                        new Tetris(innerLeft, innerTop, innerWidth, innerHeight);
+                    }, 20);
+                } catch (e) {
+                    console.error('Failed to create Tetris instance:', e);
+                }
+            });
+        </script>
+        <script>
+            // Wire the prepopulate toggle to runtime instances
+            document.addEventListener('DOMContentLoaded', function () {
+                var checkbox = document.getElementById('tetris-prepopulate-toggle');
+                if (!checkbox) return;
+                // initialize checkbox from global flag
+                checkbox.checked = !!window.TETRIS_PREPOPULATE;
+
+                function applyToInstances(enabled) {
+                    if (window.TETRIS_INSTANCES && window.TETRIS_INSTANCES.length) {
+                        window.TETRIS_INSTANCES.forEach(function (inst) {
+                            if (typeof inst.setPrepopulate === 'function') {
+                                inst.setPrepopulate(enabled);
+                            }
+                        });
+                    }
+                }
+
+                checkbox.addEventListener('change', function () {
+                    window.TETRIS_PREPOPULATE = checkbox.checked;
+                    applyToInstances(checkbox.checked);
+                });
+
+                // Apply initial state in case instances exist
+                applyToInstances(checkbox.checked);
+            });
+        </script>
+</body>
+</html>
